@@ -13,8 +13,10 @@ module Heroku::Command
 
       display output.join("\n")
     end
+  end
 
-    def rollback
+  class Rollback < Base
+    def index
       release = args.shift.downcase.strip rescue nil
       raise(CommandFailed, "Specify a release") unless release
 
