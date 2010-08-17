@@ -26,7 +26,7 @@ end
 
 class Heroku::Client
   def releases(app)
-    JSON.parse get("/apps/#{app}/releases")
+    JSON.parse get("/apps/#{app}/releases").to_s
   end
 
   def rollback(app, release)
