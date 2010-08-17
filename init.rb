@@ -13,11 +13,23 @@ module Heroku::Command
 
       display output.join("\n")
     end
+
+    def rollback
+      release = args.shift.downcase.strip rescue nil
+      raise(CommandFailed, "Specify a release") unless release
+
+      heroku.rollback(extract_app, release)
+      display "Rolled back to #{release}"
+    end
   end
 end
 
 class Heroku::Client
   def releases(app)
     JSON.parse get("/apps/#{app}/releases")
+  end
+
+  def rollback(app, release)
+    post("/apps/#{app}/releases", :rollback => release)
   end
 end
