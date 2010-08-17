@@ -4,11 +4,11 @@ module Heroku::Command
       releases = heroku.releases(extract_app)
 
       output = []
-      output << "Rel  Code     When                       What      Who"
-      output << "---  -------  -------------------------  --------  -----------"
+      output << "Rel  Change    Commit   By                    Timestamp"
+      output << "---  --------  -------  --------------------  -------------------------"
 
       releases.reverse.slice(0, 15).each do |r|
-        output << "%-4s %-8s %-26s %-9s %s" % [ r['name'], r['code'], r['created_at'], r['descr'], r['user'] ]
+        output << "%-4s %-9s %-8s %-21s %s" % [ r['name'], r['descr'], r['commit'], r['user'], r['created_at'] ]
       end
 
       display output.join("\n")
