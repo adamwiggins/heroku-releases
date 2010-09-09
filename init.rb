@@ -28,6 +28,9 @@ module Heroku::Command
       display_info("Change",  release["descr"])
       display_info("By",      release["user"])
       display_info("When",    delta_format(Time.parse(release["created_at"])))
+      display("")
+      display("Config:")
+      display_vars(release["env"])
     end
 
     private
@@ -58,6 +61,14 @@ module Heroku::Command
 
     def display_info(label, info)
       display(format("%-12s %s", "#{label}:", info))
+    end
+
+    def display_vars(vars)
+      max_length = vars.map { |v| v[0].size }.max
+      vars.keys.sort.each do |key|
+        spaces = ' ' * (max_length - key.size)
+        display "#{key}#{spaces} => #{vars[key]}"
+      end
     end
   end
 
