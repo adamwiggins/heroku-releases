@@ -18,6 +18,18 @@ module Heroku::Command
       display output.join("\n")
     end
 
+    def info
+      release = args.shift.downcase.strip rescue nil
+      raise(CommandFailed, "Specify a release") unless release
+
+      release = heroku.release(extract_app, release)
+
+      display_info("Release", release["name"])
+      display_info("Change",  release["descr"])
+      display_info("By",      release["user"])
+      display_info("When",    delta_format(Time.parse(release["created_at"])))
+    end
+
     private
 
     def pluralize(str, n)
@@ -43,6 +55,10 @@ module Heroku::Command
     def truncate(text, length)
       (text.size > length) ? text[0, length - 3] + "..." : text
     end
+
+    def display_info(label, info)
+      display(format("%-12s %s", "#{label}:", info))
+    end
   end
 
   class Rollback < Base
@@ -59,6 +75,10 @@ end
 class Heroku::Client
   def releases(app)
     JSON.parse get("/apps/#{app}/releases").to_s
+  end
+
+  def release(app, release)
+    JSON.parse get("/apps/#{app}/releases/#{release}").to_s
   end
 
   def rollback(app, release)
