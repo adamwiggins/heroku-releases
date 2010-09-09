@@ -28,6 +28,7 @@ module Heroku::Command
       display_info("Change",  release["descr"])
       display_info("By",      release["user"])
       display_info("When",    delta_format(Time.parse(release["created_at"])))
+      display_info("Addons",  release["addons"].join(", "))
       display("")
       display("Config:")
       display_vars(release["env"])
