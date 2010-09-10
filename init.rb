@@ -79,10 +79,8 @@ module Heroku::Command
   class Rollback < Base
     def index
       release = args.shift.downcase.strip rescue nil
-      raise(CommandFailed, "Specify a release") unless release
-
-      heroku.rollback(extract_app, release)
-      display "Rolled back to #{release}"
+      rolled_back = heroku.rollback(extract_app, release)
+      display "Rolled back to #{rolled_back}"
     end
   end
 end
@@ -96,7 +94,7 @@ class Heroku::Client
     JSON.parse get("/apps/#{app}/releases/#{release}").to_s
   end
 
-  def rollback(app, release)
+  def rollback(app, release=nil)
     post("/apps/#{app}/releases", :rollback => release)
   end
 end
