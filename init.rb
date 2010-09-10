@@ -5,7 +5,7 @@ module Heroku::Command
 
       output = []
       output << "Rel   Change                          By                    When"
-      output << "----  ----------                      ----------            ----------"
+      output << "----  ----------------------          ----------            ----------"
 
       releases.reverse.slice(0, 15).each do |r|
         name = r["name"]
@@ -24,13 +24,11 @@ module Heroku::Command
 
       release = heroku.release(extract_app, release)
 
-      display_info("Release", release["name"])
+      display "=== Release #{release['name']}"
       display_info("Change",  release["descr"])
       display_info("By",      release["user"])
       display_info("When",    delta_format(Time.parse(release["created_at"])))
       display_info("Addons",  release["addons"].join(", "))
-      display("")
-      display("Config:")
       display_vars(release["env"])
     end
 
@@ -66,9 +64,14 @@ module Heroku::Command
 
     def display_vars(vars)
       max_length = vars.map { |v| v[0].size }.max
+
+      first = true
+      lead = "Config:"
+
       vars.keys.sort.each do |key|
         spaces = ' ' * (max_length - key.size)
-        display "#{key}#{spaces} => #{vars[key]}"
+        display "#{first ? lead : ' ' * lead.length}      #{key}#{spaces} => #{vars[key]}"
+        first = false
       end
     end
   end
