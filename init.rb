@@ -84,8 +84,9 @@ module Heroku::Command
 
   class Rollback < Base
     def index
+      app = extract_app
       release = args.shift.downcase.strip rescue nil
-      rolled_back = heroku.rollback(extract_app, release)
+      rolled_back = heroku.rollback(app, release)
       display "Rolled back to #{rolled_back}"
     end
   end
